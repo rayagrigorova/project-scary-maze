@@ -1,4 +1,4 @@
-package Project2;
+package main;
 
 public class makeZeroes {
 

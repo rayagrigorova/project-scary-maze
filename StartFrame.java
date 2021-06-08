@@ -23,7 +23,6 @@ public class StartFrame extends JFrame {
 	StartFrame(){
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
-		mainPanel.setPreferredSize(new Dimension(300, 300));
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
 		c.gridy = 0;
