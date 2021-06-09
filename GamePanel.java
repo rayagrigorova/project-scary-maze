@@ -3,10 +3,13 @@ package main;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.InputStream;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -21,18 +24,23 @@ public class GamePanel extends JPanel {
 	//The place where the user starts - [39][9]
 	int iStart;
 	int jStart;
+	//After the start square is clicked,
+	//we need to save the last position and color it in cyan 
+	int lastI, lastJ; 
+	
 	
 	GamePanel(){
 		this.setSize(new Dimension(400,400));
 		levelNumber = 1; 
 		//side of a square 
 		a = this.getWidth() / 50; 
-		System.out.println("a =" + a );
-		System.out.println("width " + this.getWidth() );
 		mousePressed = false;
 		iStart = 39;
 		jStart = 9;
+		lastI = 39;
+		lastJ = 9; 
 		this.setVisible(true);
+		initLevel(); 
 		this.addMouseListener(new MouseListener() {
 
 			@Override
@@ -48,15 +56,46 @@ public class GamePanel extends JPanel {
 				//Clicked on the begin square 
 				if(currentLevel[e.getY() / a][e.getX() / a] == 3) {
 					mousePressed = true; 
-					currentLevel[39][9] = 1; 
-					
-					while(true) {
-						//Follow the mouse coordinates and repaint
-						//Wall, show scary picture and make frame disappear 
-						if(currentLevel[e.getY() / a][e.getX() / a] == 0 ) {
-							getTopLevelAncestor().setVisible(false);
+		
+					addMouseMotionListener(new MouseMotionListener(){
+
+						@Override
+						public void mouseDragged(MouseEvent arg0) {
+							// TODO Auto-generated method stub
+							
 						}
-					}
+
+						@Override
+						public void mouseMoved(MouseEvent arg0) {
+							//Delete last position 
+							currentLevel[lastI][lastJ] = 1; 
+							//Coordinates in the array of square to which mouse is
+							//moved 
+							int iMoved = arg0.getY() / a;
+							int jMoved = arg0.getX() / a;
+							//Change coordinates of last square so that it can be turned cyan 
+							//when the user moves elsewhere 
+							lastI = iMoved;
+							lastJ = jMoved;
+							//Wall, make scary image appear 
+							System.out.println("currentLevel[iMoved][jMoved]" + currentLevel[iMoved][jMoved]);
+							if(currentLevel[iMoved][jMoved] == 0){
+								System.out.println("Boooo");
+								getTopLevelAncestor().setVisible(false);
+								JFrame scaryFrame = new ScaryFrame();
+								Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+								scaryFrame.setLocation(dim.width/2-scaryFrame.getSize().width/2, dim.height/2-scaryFrame.getSize().height/2);
+							}
+							//Goal, proceed to next level 
+							else if (currentLevel[iMoved][jMoved] == 2){
+								if(levelNumber <= 5) levelNumber++;
+							}							
+							currentLevel[iMoved][jMoved] = 3;
+							repaint();
+							
+						}
+						
+					});
 				}
 			}
 			
@@ -96,8 +135,6 @@ public class GamePanel extends JPanel {
 			currentLevel = new int [50][50];
 			int i = 0, j = 0;
 			
-			//Start, will be marked as 3 
-			currentLevel[iStart][jStart] = 3;
 			while(true){
 				int val = level.read() - '0'; 
 				if(val >= 0 ){
@@ -112,7 +149,9 @@ public class GamePanel extends JPanel {
 				//Reached the end of the file, val is null 
 				if(val == -49) break;
 			}
-			printArray(currentLevel);
+			//Start, will be marked as 3 
+			currentLevel[iStart][jStart] = 3;
+//			printArray(currentLevel);
 			level.close();
 			}
 			
@@ -125,7 +164,6 @@ public class GamePanel extends JPanel {
 	}
 	@Override 
 	public void paintComponent(Graphics g) {
-		initLevel(); 
 		for(int i = 0; i < 50; i++) {
 			for(int j = 0; j < 50; j++) {
 				if(currentLevel[i][j] >= 0 ) {
@@ -142,7 +180,6 @@ public class GamePanel extends JPanel {
 				}
 			}
 		}
-		printArray(currentLevel);	
 	}
 	
 	public void printArray(int arr[][]){

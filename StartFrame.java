@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -23,6 +24,7 @@ public class StartFrame extends JFrame {
 	StartFrame(){
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
+		mainPanel.setPreferredSize(new Dimension(300, 300));
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
 		c.gridy = 0;
@@ -48,6 +50,8 @@ public class StartFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false); 
 				GameFrame game = new GameFrame();
+				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+				game.setLocation(dim.width/2-game.getSize().width/2, dim.height/2-game.getSize().height/2);
 			}
 
 			

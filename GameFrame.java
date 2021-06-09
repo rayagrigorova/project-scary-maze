@@ -18,7 +18,6 @@ public class GameFrame extends JFrame {
 	GridBagConstraints c = new GridBagConstraints();
 	
 	GameFrame(){
-		
 		mainPanel = new GamePanel();
 		mainPanel.setLayout(new GridBagLayout());
 		mainPanel.setPreferredSize(new Dimension(400, 400));
@@ -27,8 +26,8 @@ public class GameFrame extends JFrame {
 		c.gridy = 0;
 		c.insets = new Insets(20, 10, 10, 10);
 		
-		this.setName("The Maze");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setName("Game frame");
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.add(mainPanel);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
