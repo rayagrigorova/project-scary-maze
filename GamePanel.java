@@ -80,16 +80,23 @@ public class GamePanel extends JPanel {
 							//Wall, make scary image appear 
 							System.out.println("currentLevel[iMoved][jMoved]" + currentLevel[iMoved][jMoved]);
 							if(currentLevel[iMoved][jMoved] == 0){
-								System.out.println("Boooo");
-								getTopLevelAncestor().setVisible(false);
 								JFrame scaryFrame = new ScaryFrame();
 								Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 								scaryFrame.setLocation(dim.width/2-scaryFrame.getSize().width/2, dim.height/2-scaryFrame.getSize().height/2);
 							}
 							//Goal, proceed to next level 
 							else if (currentLevel[iMoved][jMoved] == 2){
-								if(levelNumber <= 5) levelNumber++;
-							}							
+								if(levelNumber <= 5){ 
+									levelNumber++;
+									iStart = 39;
+									jStart = 9;
+									lastI = 39;
+									lastJ = 9; 
+									initLevel();
+									repaint();
+									return;
+								}
+							}						
 							currentLevel[iMoved][jMoved] = 3;
 							repaint();
 							
