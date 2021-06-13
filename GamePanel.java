@@ -16,17 +16,20 @@ import javax.swing.SwingUtilities;
 import resources.ResourceLoader;
 
 public class GamePanel extends JPanel {
+	//Number of the current level
 	int levelNumber; 
+	//An array containing the maze of the current level 
 	int[][] currentLevel; 
-	boolean mousePressed;
 	//side of square 
 	int a;
 	//The place where the user starts - [39][9]
 	int iStart;
 	int jStart;
 	//After the start square is clicked,
-	//we need to save the last position and color it in cyan 
-	int lastI, lastJ; 
+	//we need to save the last position and color it in dark blue  
+	int lastI, lastJ;
+	
+	boolean mousePressed; 
 	
 	
 	GamePanel(){
@@ -34,11 +37,11 @@ public class GamePanel extends JPanel {
 		levelNumber = 1; 
 		//side of a square 
 		a = this.getWidth() / 50; 
-		mousePressed = false;
 		iStart = 39;
 		jStart = 9;
 		lastI = 39;
 		lastJ = 9; 
+		mousePressed = false;
 		this.setVisible(true);
 		initLevel(); 
 		this.addMouseListener(new MouseListener() {
@@ -53,10 +56,9 @@ public class GamePanel extends JPanel {
 			//If the mouse is pressed, we must follow the coordinates of the cursor. If they hit a red square, a scary image must appear 
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
+				mousePressed = true; 
 				//Clicked on the begin square 
 				if(currentLevel[e.getY() / a][e.getX() / a] == 3) {
-					mousePressed = true; 
-		
 					addMouseMotionListener(new MouseMotionListener(){
 
 						@Override
@@ -67,10 +69,10 @@ public class GamePanel extends JPanel {
 
 						@Override
 						public void mouseMoved(MouseEvent arg0) {
+							if(!mousePressed) return; 
 							//Delete last position 
 							currentLevel[lastI][lastJ] = 1; 
-							//Coordinates in the array of square to which mouse is
-							//moved 
+							//Coordinates in the array of square to which mouse is moved 
 							int iMoved = arg0.getY() / a;
 							int jMoved = arg0.getX() / a;
 							//Change coordinates of last square so that it can be turned cyan 
@@ -78,11 +80,11 @@ public class GamePanel extends JPanel {
 							lastI = iMoved;
 							lastJ = jMoved;
 							//Wall, make scary image appear 
-							System.out.println("currentLevel[iMoved][jMoved]" + currentLevel[iMoved][jMoved]);
 							if(currentLevel[iMoved][jMoved] == 0){
 								JFrame scaryFrame = new ScaryFrame();
 								Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 								scaryFrame.setLocation(dim.width/2-scaryFrame.getSize().width/2, dim.height/2-scaryFrame.getSize().height/2);
+								return;
 							}
 							//Goal, proceed to next level 
 							else if (currentLevel[iMoved][jMoved] == 2){
@@ -94,7 +96,8 @@ public class GamePanel extends JPanel {
 									lastJ = 9; 
 									initLevel();
 									repaint();
-									return;
+									mousePressed = false; 
+									return; 
 								}
 							}						
 							currentLevel[iMoved][jMoved] = 3;
@@ -158,7 +161,6 @@ public class GamePanel extends JPanel {
 			}
 			//Start, will be marked as 3 
 			currentLevel[iStart][jStart] = 3;
-//			printArray(currentLevel);
 			level.close();
 			}
 			
