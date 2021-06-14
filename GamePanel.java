@@ -18,24 +18,30 @@ import resources.ResourceLoader;
 public class GamePanel extends JPanel {
 	//Number of the current level
 	int levelNumber; 
+	
 	//An array containing the maze of the current level 
 	int[][] currentLevel; 
+	
 	//side of square 
 	int a;
-	//The place where the user starts - [39][9]
-	int iStart;
-	int jStart;
-	//After the start square is clicked,
-	//we need to save the last position and color it in dark blue  
+	
+	//The place in the array where the user starts (39,9)
+	final int iStart;
+	final int jStart;
+	
+	//Last position where the user was
+	//We need it so we can color the last position back to cyan 
 	int lastI, lastJ;
 	
+	//This variable controls the mouseMoved() function
+	//so that only when the mouse is pressed the movements are registered  
 	boolean mousePressed; 
 	
 	
-	GamePanel(){
+	GamePanel() throws GameWonException{
 		this.setSize(new Dimension(400,400));
 		levelNumber = 1; 
-		//side of a square 
+		//side of a square, there will be a total of 2500 squares
 		a = this.getWidth() / 50; 
 		iStart = 39;
 		jStart = 9;
@@ -70,7 +76,8 @@ public class GamePanel extends JPanel {
 						@Override
 						public void mouseMoved(MouseEvent arg0) {
 							if(!mousePressed) return; 
-							//Delete last position 
+							try{
+							//Color last position back to cyan  
 							currentLevel[lastI][lastJ] = 1; 
 							//Coordinates in the array of square to which mouse is moved 
 							int iMoved = arg0.getY() / a;
@@ -88,21 +95,34 @@ public class GamePanel extends JPanel {
 							}
 							//Goal, proceed to next level 
 							else if (currentLevel[iMoved][jMoved] == 2){
-								if(levelNumber <= 5){ 
+								if(levelNumber < 5){ 
+									//Continue to next level 
 									levelNumber++;
-									iStart = 39;
-									jStart = 9;
+									//Set the last coordinates to the start 
 									lastI = 39;
 									lastJ = 9; 
 									initLevel();
 									repaint();
+									//Stop following the mouse
 									mousePressed = false; 
 									return; 
 								}
-							}						
+								//If the level is >= 5, the game was won
+								//(Although the player isn't supposed to win)
+								//That's why we will continue to follow the mouse
+								//After the user closes the congratulation tab, 
+								//the scary image will appear because the mouse coordinates changed
+								else{
+									throw new GameWonException();
+								}
+							}
+							//Move the blue square to the position the user chose 
 							currentLevel[iMoved][jMoved] = 3;
 							repaint();
-							
+							}
+							catch(GameWonException e){
+								System.out.println("User won the game!");
+							}
 						}
 						
 					});
@@ -134,6 +154,7 @@ public class GamePanel extends JPanel {
 	public void initLevel() {
 		if(levelNumber <= 5) {
 			InputStream level = null;
+			//Load level from file 
 			try{
 			switch(levelNumber){
 			case 1: level = ResourceLoader.loadFileAsInputStream("level1.txt"); break;
@@ -142,10 +163,12 @@ public class GamePanel extends JPanel {
 			case 4: level = ResourceLoader.loadFileAsInputStream("level4.txt"); break;
 			case 5: level = ResourceLoader.loadFileAsInputStream("level5.txt"); break;
 			}
+			//Create array
 			currentLevel = new int [50][50];
 			int i = 0, j = 0;
 			
 			while(true){
+				// - '0' so we can get int value of character (ASCII table) 
 				int val = level.read() - '0'; 
 				if(val >= 0 ){
 					currentLevel[i][j] = val;

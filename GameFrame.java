@@ -17,7 +17,7 @@ public class GameFrame extends JFrame {
 	JPanel mainPanel;
 	GridBagConstraints c = new GridBagConstraints();
 	
-	GameFrame(){
+	GameFrame() throws GameWonException{
 		mainPanel = new GamePanel();
 		mainPanel.setLayout(new GridBagLayout());
 		mainPanel.setPreferredSize(new Dimension(400, 400));

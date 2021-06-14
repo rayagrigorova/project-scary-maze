@@ -49,9 +49,15 @@ public class StartFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false); 
-				GameFrame game = new GameFrame();
-				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-				game.setLocation(dim.width/2-game.getSize().width/2, dim.height/2-game.getSize().height/2);
+				GameFrame game;
+				try {
+					game = new GameFrame();
+					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+					game.setLocation(dim.width/2-game.getSize().width/2, dim.height/2-game.getSize().height/2);
+				} catch (GameWonException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 			
