@@ -59,7 +59,7 @@ public class GamePanel extends JPanel {
 			}
 
 			@Override
-			//If the mouse is pressed, we must follow the coordinates of the cursor. If they hit a red square, a scary image must appear 
+			//If the mouse is pressed, we must follow the coordinates of the cursor. If a wall is hit, a scary image must appear 
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
 				mousePressed = true; 
@@ -76,7 +76,9 @@ public class GamePanel extends JPanel {
 						@Override
 						public void mouseMoved(MouseEvent arg0) {
 							if(!mousePressed) return; 
+							
 							try{
+								
 							//Color last position back to cyan  
 							currentLevel[lastI][lastJ] = 1; 
 							//Coordinates in the array of square to which mouse is moved 
@@ -86,6 +88,7 @@ public class GamePanel extends JPanel {
 							//when the user moves elsewhere 
 							lastI = iMoved;
 							lastJ = jMoved;
+							
 							//Wall, make scary image appear 
 							if(currentLevel[iMoved][jMoved] == 0){
 								JFrame scaryFrame = new ScaryFrame();
@@ -93,6 +96,7 @@ public class GamePanel extends JPanel {
 								scaryFrame.setLocation(dim.width/2-scaryFrame.getSize().width/2, dim.height/2-scaryFrame.getSize().height/2);
 								return;
 							}
+							
 							//Goal, proceed to next level 
 							else if (currentLevel[iMoved][jMoved] == 2){
 								if(levelNumber < 5){ 
@@ -121,7 +125,7 @@ public class GamePanel extends JPanel {
 							repaint();
 							}
 							catch(GameWonException e){
-								System.out.println("User won the game!");
+								
 							}
 						}
 						
@@ -155,38 +159,37 @@ public class GamePanel extends JPanel {
 		if(levelNumber <= 5) {
 			InputStream level = null;
 			//Load level from file 
-			try{
-			switch(levelNumber){
-			case 1: level = ResourceLoader.loadFileAsInputStream("level1.txt"); break;
-			case 2: level = ResourceLoader.loadFileAsInputStream("level2.txt"); break;
-			case 3: level = ResourceLoader.loadFileAsInputStream("level3.txt"); break;
-			case 4: level = ResourceLoader.loadFileAsInputStream("level4.txt"); break;
-			case 5: level = ResourceLoader.loadFileAsInputStream("level5.txt"); break;
-			}
-			//Create array
-			currentLevel = new int [50][50];
-			int i = 0, j = 0;
-			
-			while(true){
-				// - '0' so we can get int value of character (ASCII table) 
-				int val = level.read() - '0'; 
-				if(val >= 0 ){
-					currentLevel[i][j] = val;
-					//When we reach the end of a row, i must be increased by 1 
-					if(j == 49){
-						i++;
-					}
-					//j is increased each time, % 50 so that when the end of a row is reached, j starts from 0 
-					j = (j + 1) % 50; 
+			try {
+				switch(levelNumber){
+				case 1: level = ResourceLoader.loadFileAsInputStream("level1.txt"); break;
+				case 2: level = ResourceLoader.loadFileAsInputStream("level2.txt"); break;
+				case 3: level = ResourceLoader.loadFileAsInputStream("level3.txt"); break;
+				case 4: level = ResourceLoader.loadFileAsInputStream("level4.txt"); break;
+				case 5: level = ResourceLoader.loadFileAsInputStream("level5.txt"); break;
 				}
-				//Reached the end of the file, val is null 
-				if(val == -49) break;
+				//Create array
+				currentLevel = new int [50][50];
+				int i = 0, j = 0;
+				
+				while(true){
+					// - '0' so we can get int value of character (ASCII table) 
+					int val = level.read() - '0'; 
+					if(val >= 0 ){
+						currentLevel[i][j] = val;
+						//When we reach the end of a row, i must be increased by 1 
+						if(j == 49){
+							i++;
+						}
+						//j is increased each time, % 50 so that when the end of a row is reached, j starts from 0 
+						j = (j + 1) % 50; 
+					}
+					//Reached the end of the file, val is null 
+					if(val == -49) break;
+				}
+				//Start, will be marked as 3 
+				currentLevel[iStart][jStart] = 3;
+				level.close();
 			}
-			//Start, will be marked as 3 
-			currentLevel[iStart][jStart] = 3;
-			level.close();
-			}
-			
 			catch(Exception e){
 				e.printStackTrace();
 				System.out.println("oopsie"); 
@@ -202,7 +205,7 @@ public class GamePanel extends JPanel {
 					switch(currentLevel[i][j]) {
 						//Wall, color in black
 						case 0: g.setColor(Color.BLACK); g.fillRect(a * j , a * i, a, a); break;
-						//Path, color in light blue
+						//Path, color in cyan
 						case 1: g.setColor(Color.CYAN); g.fillRect(a * j , a * i, a, a); break;
 						//Goal, color in red 
 						case 2: g.setColor(Color.RED); g.fillRect(a * j , a * i, a, a); break;

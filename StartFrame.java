@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JFrame;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -24,19 +25,25 @@ public class StartFrame extends JFrame {
 	StartFrame(){
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
-		mainPanel.setPreferredSize(new Dimension(300, 300));
+		mainPanel.setPreferredSize(new Dimension(700, 300));
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
 		c.gridy = 0;
 		c.insets = new Insets(20, 10, 10, 10);
 		
+		Font font = new Font("SansSerif", Font.BOLD, 20);
+		Font font2 = new Font("SansSerif", Font.BOLD, 50);
+		
 		theMaze = new JLabel("The Maze");
 		theMaze.setHorizontalAlignment(JLabel.CENTER);
+		theMaze.setFont(font2);
 		
 		explanation = new JLabel("Try to reach the goal"
 				+ " without touching the walls!");
+		explanation.setFont(font);
 		playButton = new JButton("Play");
 		playButton.setBounds(0, 0, 10, 10);
+		playButton.setFont(font);
 		
 		mainPanel.add(theMaze, c);
 		c.gridy = 1;
@@ -44,6 +51,7 @@ public class StartFrame extends JFrame {
 		c.gridy = 2; 
 		mainPanel.add(playButton, c);
 		
+		//After the play button is pressed, we must create a game frame 
 		playButton.addActionListener(new ActionListener(){
 
 			@Override
