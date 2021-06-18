@@ -78,7 +78,6 @@ public class GamePanel extends JPanel {
 							if(!mousePressed) return; 
 							
 							try{
-								
 							//Color last position back to cyan  
 							currentLevel[lastI][lastJ] = 1; 
 							//Coordinates in the array of square to which mouse is moved 
@@ -113,10 +112,8 @@ public class GamePanel extends JPanel {
 								}
 								//If the level is >= 5, the game was won
 								//(Although the player isn't supposed to win)
-								//That's why we will continue to follow the mouse
-								//After the user closes the congratulation tab, 
-								//the scary image will appear because the mouse coordinates changed
 								else{
+									mousePressed = false; 
 									throw new GameWonException();
 								}
 							}
@@ -183,7 +180,7 @@ public class GamePanel extends JPanel {
 						//j is increased each time, % 50 so that when the end of a row is reached, j starts from 0 
 						j = (j + 1) % 50; 
 					}
-					//Reached the end of the file, val is null 
+					//Reached the end of the file, char is null 
 					if(val == -49) break;
 				}
 				//Start, will be marked as 3 
